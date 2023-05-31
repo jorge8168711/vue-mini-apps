@@ -34,6 +34,9 @@ export default defineComponent({
       for (const todo of this.todos) {
         todo.completed = newValue
       }
+    },
+    deleteTodo(index: number) {
+      this.todos.splice(index, 1)
     }
   },
   watch: {
@@ -57,7 +60,8 @@ export default defineComponent({
         :key="todo.id"
         :todo="(todo as Todo)"
         :index="index"
-        @onCompleteChange="setCompleted(index, $event)"
+        @onCompleteChange="setCompleted"
+        @onDelete="deleteTodo"
       />
     </ul>
   </div>

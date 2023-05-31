@@ -3,14 +3,15 @@ import { defineComponent } from 'vue'
 import { Todo } from './models'
 
 export default defineComponent({
-  emits: ['onCompleteChange'],
+  emits: ['onCompleteChange', 'onDelete'],
   props: {
     todo: { type: Todo, required: true },
     index: { type: Number, required: true }
   },
   methods: {
     onCompleteChange(event: Event) {
-      this.$emit('onCompleteChange', (event.target as HTMLInputElement).checked)
+      const checked = (event.target as HTMLInputElement).checked
+      this.$emit('onCompleteChange', this.index, checked)
     }
   }
 })
@@ -25,7 +26,7 @@ export default defineComponent({
       type="checkbox"
     />
     <p :class="{ isActive: todo.completed }" class="todo-item-content">{{ todo.content }}</p>
-    <button type="button" class="todo-item-button">x</button>
+    <button @click="$emit('onDelete', index)" type="button" class="todo-item-button">x</button>
   </li>
 </template>
 
