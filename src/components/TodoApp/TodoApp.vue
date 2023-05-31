@@ -13,13 +13,30 @@ export default defineComponent({
   },
   data() {
     return {
-      todos: [] as Todo[]
+      todos: [] as Todo[],
+      allCompleted: false
     }
   },
   methods: {
     addTodo(todo: string) {
       const newTodo = new Todo(todo, nanoid())
       this.todos.push(newTodo)
+    },
+    toggleAll() {
+      if (!this.todos.length) return
+
+      const newValue = !this.allCompleted
+      this.allCompleted = newValue
+
+      for (const todo of this.todos) {
+        todo.completed = newValue
+      }
+    }
+  },
+  watch: {
+    todos(_, newSt) {
+      const allIsCompleted = newSt.every((todo: Todo) => todo.completed)
+      this.allCompleted = allIsCompleted
     }
   }
 })
@@ -27,7 +44,7 @@ export default defineComponent({
 
 <template>
   <div class="todolist">
-    <TodoInput @submit="addTodo" />
+    <TodoInput @onSubmit="addTodo" :allCompleted="allCompleted" @onToggle="toggleAll" />
 
     <ul class="todolist-wrapper">
       <TodoItem

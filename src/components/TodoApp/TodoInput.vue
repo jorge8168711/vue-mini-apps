@@ -2,7 +2,11 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  emits: ['submit', 'completeAll'],
+  emits: ['onSubmit', 'onToggle'],
+  props: {
+    allCompleted: { type: Boolean, required: false, default: false },
+    onToggle: { type: Function, required: false, default: () => {} }
+  },
   data() {
     return {
       newTodo: ''
@@ -10,7 +14,7 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
-      this.$emit('submit', this.newTodo)
+      this.$emit('onSubmit', this.newTodo)
       this.newTodo = ''
     }
   }
@@ -19,7 +23,7 @@ export default defineComponent({
 
 <template>
   <form class="form" @submit.prevent="onSubmit">
-    <button @click="$emit('completeAll')" type="button">*</button>
+    <button :class="{ disabled: !allCompleted }" @click="$emit('onToggle')" type="button">*</button>
     <input class="input" v-model="newTodo" type="text" placeholder="What needs to be done?" />
   </form>
 </template>
@@ -31,5 +35,8 @@ export default defineComponent({
 }
 .input {
   width: 100%;
+}
+button.disabled {
+  opacity: 0.35;
 }
 </style>
