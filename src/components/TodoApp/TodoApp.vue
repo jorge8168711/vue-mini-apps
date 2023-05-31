@@ -22,6 +22,9 @@ export default defineComponent({
       const newTodo = new Todo(todo, nanoid())
       this.todos.push(newTodo)
     },
+    setCompleted(index: number, value: boolean) {
+      this.todos[index].completed = value
+    },
     toggleAll() {
       if (!this.todos.length) return
 
@@ -34,9 +37,11 @@ export default defineComponent({
     }
   },
   watch: {
-    todos(_, newSt) {
-      const allIsCompleted = newSt.every((todo: Todo) => todo.completed)
-      this.allCompleted = allIsCompleted
+    todos: {
+      handler(todos: Todo[]) {
+        this.allCompleted = todos.every((todo) => todo.completed)
+      },
+      deep: true
     }
   }
 })
@@ -52,6 +57,7 @@ export default defineComponent({
         :key="todo.id"
         :todo="(todo as Todo)"
         :index="index"
+        @onCompleteChange="setCompleted(index, $event)"
       />
     </ul>
   </div>

@@ -3,16 +3,27 @@ import { defineComponent } from 'vue'
 import { Todo } from './models'
 
 export default defineComponent({
+  emits: ['onCompleteChange'],
   props: {
     todo: { type: Todo, required: true },
     index: { type: Number, required: true }
+  },
+  methods: {
+    onCompleteChange(event: Event) {
+      this.$emit('onCompleteChange', (event.target as HTMLInputElement).checked)
+    }
   }
 })
 </script>
 
 <template>
   <li class="todo-item">
-    <input class="todo-item-checkbox" :checked="todo.completed" type="checkbox" />
+    <input
+      @change="onCompleteChange"
+      class="todo-item-checkbox"
+      :checked="todo.completed"
+      type="checkbox"
+    />
     <p :class="{ isActive: todo.completed }" class="todo-item-content">{{ todo.content }}</p>
     <button type="button" class="todo-item-button">x</button>
   </li>

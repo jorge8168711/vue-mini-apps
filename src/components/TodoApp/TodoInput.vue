@@ -4,8 +4,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   emits: ['onSubmit', 'onToggle'],
   props: {
-    allCompleted: { type: Boolean, required: false, default: false },
-    onToggle: { type: Function, required: false, default: () => {} }
+    allCompleted: { type: Boolean, required: false, default: false }
   },
   data() {
     return {
@@ -23,7 +22,9 @@ export default defineComponent({
 
 <template>
   <form class="form" @submit.prevent="onSubmit">
-    <button :class="{ disabled: !allCompleted }" @click="$emit('onToggle')" type="button">*</button>
+    <button :class="{ disabled: !allCompleted }" @click="$emit('onToggle')" type="button">
+      {{ allCompleted ? '✓' : '-' }}
+    </button>
     <input class="input" v-model="newTodo" type="text" placeholder="What needs to be done?" />
   </form>
 </template>
