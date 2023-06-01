@@ -13,6 +13,8 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
+      if (!this.newTodo.trim()) return
+
       this.$emit('onSubmit', this.newTodo)
       this.newTodo = ''
     }

@@ -24,7 +24,8 @@ export default defineComponent({
     return {
       todos: getInitialTodos() as Todo[],
       allCompleted: false,
-      visibility: 'all'
+      visibility: 'all',
+      editedTodo: null as Todo | null
     }
   },
   computed: {
@@ -37,12 +38,28 @@ export default defineComponent({
     }
   },
   methods: {
+    toggleEditMode(todo: Todo) {
+      this.editedTodo = todo
+    },
+    doneEdit(todo: Todo, newValue: string) {
+      if (!this.editedTodo) return
+
+      this.editedTodo = null
+      todo.content = newValue.trim()
+
+      if (!todo.content) {
+        this.deleteTodo(todo)
+      }
+    },
+    cancelEdit() {
+      this.editedTodo = null
+    },
+
     addTodo(todo: string) {
       const newTodo = new Todo(todo, nanoid())
       this.todos.push(newTodo)
     },
     setCompleted(index: number, value: boolean) {
-      console.log({ index, value })
       this.todos[index].completed = value
     },
     toggleAll() {
@@ -74,7 +91,7 @@ export default defineComponent({
   watch: {
     todos: {
       handler(todos: Todo[]) {
-        this.allCompleted = todos.every((todo) => todo.completed)
+        this.allCompleted = todos.length > 0 && todos.every((todo) => todo.completed)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
       },
       deep: true
@@ -97,13 +114,15 @@ export default defineComponent({
 
     <ul class="todolist-wrapper" v-show="todos.length">
       <TodoItem
-        v-for="(todo, index) in filteredTodos"
+        v-for="todo in filteredTodos"
+        v-model="todo.completed"
         :key="todo.id"
         :todo="(todo as Todo)"
-        :index="index"
-        :modelValue="todo.completed"
-        @update:modelValue="(newValue: boolean) => (todo.completed = newValue)"
+        :editedTodo="editedTodo as Todo"
         @onDelete="deleteTodo"
+        @onEdit="toggleEditMode"
+        @cancelEdit="cancelEdit"
+        @doneEdit="doneEdit"
       />
     </ul>
 
