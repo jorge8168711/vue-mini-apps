@@ -4,7 +4,6 @@ export class Todo {
   private _content = ''
   private _completed = false
   id = ''
-  created = new Date()
 
   constructor(content: string, id = nanoid(), completed = false) {
     this.id = id
